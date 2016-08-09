@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html>
+<head>
+    <title>User Add</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+</head>
+<body ng-app="UserAdd">
+    <script>
+        angular.module('UserAdd', [])
+        .controller('UserAddController', ['$scope', '$http', function ($scope, $http) {
+            $scope.submit = function () {
+                var user = {
+                    "Id": $scope.Id,
+                    "Name": $scope.Name,
+                    "Designation": $scope.Designation,
+                   
+                    //"First_Name": $scope.First_Name,
+                    //"Last_Name": $scope.Last_Name,
+                    //"Email_Id": $scope.Email_Id,
+                    //"WorkerID": $scope.WorkerID,
+                    //"RoleID": $scope.RoleID
+                }
+                //api/values/ employee - body-json {"Id":"4","Name":"Frank11","Designation":"Chappel"}
+
+                $http.post('api/values/', user).
+                       success(function (data, status, headers, config) {
+                           alert('User Added Successfully');
+                       }).
+                       error(function (data, status, headers, config) {
+                           alert("erro");
+                       });
+
+            };
+        }]);
+    </script>
+    <h2>Add New USer</h2>
+
+    <form ng-submit="submit()" ng-controller="UserAddController">
+        <div>id:<input type="text" ng-model="Id" required></div></br>
+        <div>Name:<input type="text" ng-model="Name" required></div></br>
+        <div>Designation:<input type="text" ng-model="Designation" required> </div> </br>
+        <!--<div>Email Id:<input type="text" ng-model="Email_Id"> </div> </br>
+        <div>Worker ID:<input type="text" ng-model="WorkerID"> </div> </br>
+        <div>Role ID:<input type="text" ng-model="RoleID"> </div> </br>-->
+
+        <div> <input type="submit" id="Usersubmit" value="Submit" /></div> </br>
+    </form>
+</body>
+</html>

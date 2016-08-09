@@ -1,0 +1,207 @@
+﻿<body ng-app="ProductApp">
+    <h1>User List</h1>
+    <div ng-controller="EmployeeController">
+
+        <div id="errormsg" style="text-align:center;"><h1>{{ErrorMessage}}</h1></div>
+        <!--ng-model="searchuser" onkeyup="searchuserfunc()"-->
+        <input style="width:100%" type="text" id="serachuser" ng-model="searchbar"  ng-keyup="searchuserfunc()" />
+        <input type="button"  value="New Entry" ng-click="NewEmployeeShow()" />
+        <table  border="1" width="80%">
+            <thead>
+                <tr>
+                    <th  width="5%">ID</th>
+                    <th  width="15%">First Name</th>
+                    <th  width="15%">Last Name</th>
+                    <th  width="15%">Email Id</th>
+                    <th  width="15%">Worker Id</th>
+                    <th  width="15%">Role Id</th>
+                    <th colspan="2" width="20%">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="employee in employees">
+                    <td width="5%">{{employee.Id}}</td>
+                    <td width="15%">{{employee.First_Name}}</td>
+                    <td width="15%">{{employee.Last_Name}}</td>
+                    <td width="15%">{{employee.Email_Id}}</td>
+                    <td width="15%">{{employee.Worker_Id}}</td>
+                    <td width="15%">{{employee.RoleName}}</td>
+                    <td width="10%"><input type="button" value="Edit" ng-click="Fill(employee)" /></td>
+                    <td width="10%"><input type="button" value="Delete" ng-click="Delete(employee.Id)" /></td>
+
+                </tr>
+            </tbody>
+        </table>
+
+        <br />
+        <br />
+        <br />
+        <div ng-show="Editpanel">
+            <form ng-submit="Edit()">
+                <div>id:<input type="text" ng-model="Id" disabled="disabled" required></div></br>
+                <div>First Name:<input type="text" ng-model="First_Name" required></div></br>
+                <div>Last Name:<input type="text" ng-model="Last_Name" required></div></br>
+                <div>Emailid:<input type="text" ng-model="Email_Id" required></div></br>
+                <div>Worker Id:<input type="text" ng-model="Worker_Id" required> </div> </br>
+                <div>Role_Id:
+                    <select ng-model="Role_Id" class="form-control">
+                        <option value="1">Case Worker</option>
+                        <option value="2">Supervisor</option>
+                        <option value="3">Local Director</option>
+                        <option value="4">State Director</option>
+                    </select>
+                 </div> </br>
+                <div> <input type="submit" id="Usersubmit" value="Submit" /></div> </br>
+            </form>
+        </div>
+
+        <div ng-show="NewEmployeepanel">
+            <form ng-submit="InsertNewEmployee()">
+                <div>First Name:<input type="text" ng-model="First_Name" required></div></br>
+                <div>Last Name:<input type="text" ng-model="Last_Name" required> </div> </br>
+                <div>Emailid:<input type="text" ng-model="Email_Id" required></div></br>
+                <div>Worker Id:<input type="text" ng-model="Worker_Id" required> </div> </br>
+                <div>Role Id:
+                    <select ng-model="Role_Id" class="form-control">
+                        <option value="1">Case Worker</option>
+                        <option value="2">Supervisor</option>
+                        <option value="3">Local Director</option>
+                        <option value="4">State Director</option>
+                    </select>
+                <!--<input type="text" ng-model="Role_Id" required></div></br>-->
+                <div> <input type="submit" id="Usersubmit" value="Submit" /></div> </br>
+            </form>
+        </div>
+</div>
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script>
+    var app = angular.module("ProductApp", []);
+    app.controller("EmployeeController", function ($scope, $http) {
+
+        $scope.Editpanel = false;
+        $scope.NewEmployeepanel = false;
+        
+        $scope.ErrorMessage = "";
+        
+        
+        $scope.GetDetails = function () {
+            console.log('get details inialized');
+            $http.get('api/values/').success(function (data, status, headers, config) {
+                $scope.employees = data;
+            }).error(function (data) {
+                //alert(status + "error");
+                alert('fdgfdgdfg');
+            });
+            console.log('get details end');
+        }
+
+        $scope.GetDetails();
+
+        $scope.Edit = function () {
+            var employee1 = {
+                "Id": $scope.Id,
+                "First_Name": $scope.First_Name,
+                "Last_Name": $scope.Last_Name,
+                "Email_Id": $scope.Email_Id,
+                "Worker_Id": $scope.Worker_Id,
+                "Role_Id": $scope.Role_Id
+                
+            }
+
+            $http.put('api/values/' + employee1.Id, JSON.stringify(employee1)).success(function (data, status, headers, config) {
+                $scope.ErrorMessage = 'data Updated';
+                $scope.GetDetails();
+                $scope.Editpanel = false;
+             }).error(function (data, status, headers, config) {
+                 $scope.ErrorMessage = 'Error in Updation';
+                    });
+        };
+
+        $scope.Delete = function (id) {
+            $http.delete('api/values/' + id).success(function (data, status, headers, config) {
+                $scope.GetDetails();
+                $scope.ErrorMessage = 'data Deleted';
+            }).error(function (data, status, headers, config) {
+                $scope.ErrorMessage = 'Error in Deleting';
+            });
+        };
+
+        $scope.Fill = function (employee) {
+            $scope.Id = employee.Id;
+            $scope.First_Name = employee.First_Name;
+            $scope.Last_Name = employee.Last_Name;
+            $scope.Email_Id = employee.Email_Id;
+            $scope.Worker_Id = employee.Worker_Id;
+            $scope.Role_Id = employee.Role_Id;
+            $scope.Editpanel = true;
+        };
+
+        $scope.NewEmployeeShow = function () {
+            $scope.Id = '';
+            $scope.First_Name = '';
+            $scope.Last_Name = '';
+            $scope.Email_Id = '';
+            $scope.Worker_Id = '';
+            $scope.Role_Id = '';
+            $scope.NewEmployeepanel = !$scope.NewEmployeepanel;
+            $scope.Editpanel = false;
+        }
+
+        $scope.InsertNewEmployee = function () {
+            var user = {
+                "First_Name": $scope.First_Name,
+                "Last_Name": $scope.Last_Name,
+                "Email_Id": $scope.Email_Id,
+                "Worker_Id": $scope.Worker_Id,
+                "Role_Id": $scope.Role_Id
+                
+            }
+
+            
+            $http.post('api/values/', user).
+                   success(function (data, status, headers, config) {
+                       $scope.ErrorMessage = 'User Added Successfully';
+                       
+                   }).
+                   error(function (data, status, headers, config) {
+                       $scope.ErrorMessage = 'Error in Employee Insertion';
+                   });
+
+            $scope.NewEmployeepanel = false;
+            //alert('aaaaaaaaaa');
+            $scope.GetDetails();
+            $scope.Editpanel = false;
+
+        };
+
+        $scope.searchuserfunc = function () {
+
+           //alert($scope.searchbar);
+            if ($scope.searchbar != '') {
+                $http.get('ankit/' + $scope.searchbar).
+                       success(function (data, status, headers, config) {
+                           $scope.employees = data;
+
+                       }).
+                       error(function (data, status, headers, config) {
+                           $scope.ErrorMessage = 'Error in Employee Insertion';
+                       });
+            }
+            else {
+                $scope.GetDetails();
+            }
+            //$scope.NewEmployeepanel = false;
+            ////alert('aaaaaaaaaa');
+            //$scope.GetDetails();
+            //$scope.Editpanel = false;
+
+        };
+
+        
+    });
+</script>

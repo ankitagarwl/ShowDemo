@@ -1,0 +1,31 @@
+﻿<body ng-app="ProductApp">
+    <h1>Product List1</h1>
+    <div ng-controller="EmployeeController">
+        <table ng-repeat="employee in employees" border="1" width="50%">
+            <tr>
+                <td width="30%">{{employee.Id}}</td>
+                <td width="30%">{{employee.Name}}</td>
+                <td width="30%">{{employee.Designation}}</td>
+                
+            </tr>
+
+        </table>
+    </div>
+    
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script>
+    var app = angular.module("ProductApp", []);
+    app.controller("EmployeeController", function ($scope, $http) {
+        $http.get('http://localhost:57925/api/values/').
+          success(function (data, status, headers, config) {
+            //  alert(data);
+              $scope.employees = data;
+              
+          }).
+          error(function (data, status, headers, config) {
+              alert("error");
+          });
+    });
+</script>
