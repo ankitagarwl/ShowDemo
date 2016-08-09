@@ -22,11 +22,13 @@ namespace DAL
 
         public DataSet GetUserDetails()
         {
+            int CurrentPage = 1;
+            int PageSize = 10;
             DataSet dtStAdminLogin;
             SqlParameter[] arrParam = new SqlParameter[2];
-            //arrParam[0] = new SqlParameter("@PageSize", id);
-            //arrParam[1] = new SqlParameter("@CurrentPage", id);
-            dtStAdminLogin = SqlHelper.ExecuteDataset(m_Connection_String, CommandType.StoredProcedure, "getEmployeeDetails_new");
+            arrParam[0] = new SqlParameter("@PageSize", PageSize);
+            arrParam[1] = new SqlParameter("@CurrentPage", CurrentPage);
+            dtStAdminLogin = SqlHelper.ExecuteDataset(m_Connection_String, CommandType.StoredProcedure, "getEmployeeDetails_new", arrParam);
             return dtStAdminLogin;
         }
 

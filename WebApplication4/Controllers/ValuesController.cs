@@ -33,7 +33,9 @@ namespace WebApplication4.Controllers
         #region Get
 
         // api/values/
-        public IEnumerable<Employee> Get()
+        [System.Web.Mvc.HttpGet]
+        [System.Web.Mvc.Route("values/")]
+        public IEnumerable<Employee> GetAllUsers()
 
         {
             Category ct = new Category();
@@ -43,7 +45,9 @@ namespace WebApplication4.Controllers
         }
 
         //api/values/1
-        public IEnumerable<Employee> Get(int id)
+        [System.Web.Mvc.HttpGet]
+        [System.Web.Mvc.Route("values/{id}")]
+        public IEnumerable<Employee> GetUserById(int id)
         {
             List<Employee> emp = new List<Employee>();
             Category ct = new Category();
@@ -163,7 +167,7 @@ namespace WebApplication4.Controllers
 
         #region Delete
         //api/values/1 
-        public HttpResponseMessage Delete(int id)
+        public HttpResponseMessage DeleteUser(int id)
          {
             Category ct = new Category();
             int status = ct.DeleteEmployee(id);
